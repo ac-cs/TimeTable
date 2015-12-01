@@ -12,10 +12,15 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    enum defaultsKeys {
+        static let barCode = "BARCODE"
+        static let savedDate = "SAVEDDATE"
+    }
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
+        application.registerUserNotificationSettings(settings)
         return true
     }
 
@@ -40,7 +45,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
+    
+    func setBarcode(barCode: String) {
+        let defaults = NSUserDefaults.standardUserDefaults()
+        defaults.setValue(barCode, forKey: defaultsKeys.barCode)
+        defaults.synchronize()
+    }
+    
+    func getBarcode() -> String?{
+        let defaults = NSUserDefaults.standardUserDefaults()
+        if let studentBarcode = defaults.stringForKey(defaultsKeys.barCode) {
+            return studentBarcode
+        } else {
+            return nil
+        }
+    }
+    
+    func sendPushNotification(nextClass: Course, nextClassTime: NSDate) {
+        let localNotification: UILocalNotification = UILocalNotification()
+        localNotification.alertAction = nextClass.courseName
+        localNotification.alertBody = "You have \(nextClass.courseName) at \(nextClass.startTime) in room \(nextClass.roomID)!"
+        localNotification.fireDate = nextClassTime
+        UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
+        print("Set push notification at \(nextClassTime)!")
+    }
 }
 
