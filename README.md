@@ -1,3 +1,5 @@
+A student companion app is coming after the API is finalized. This app will hopefully be compatible with Android, iOS, Windows Phone/Windows, and Mac OS X.
+
 # TimeTable
 TimeTable app for iOS
 
